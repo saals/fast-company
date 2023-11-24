@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import User from "./user";
+import Pagination from "./pagination";
+import paginate from "../utils/paginate";
 
 const Users = ({ users, ...rest }) => {
   const tableTitles = [
@@ -11,25 +13,44 @@ const Users = ({ users, ...rest }) => {
     "Избранное",
   ];
 
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const userCount = users.length;
+  const pageSize = 4;
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const userCrop = paginate(users, currentPage, pageSize);
+
   return (
-    users.length > 0 && (
-      <table className="table table-striped">
-        <thead>
-          <tr>
-            {tableTitles.map((title) => (
-              <th key={title} scope="col">
-                {title}
-              </th>
+    userCount > 0 && (
+      <>
+        <table className="table table-striped">
+          <thead>
+            <tr>
+              {tableTitles.map((title) => (
+                <th key={title} scope="col">
+                  {title}
+                </th>
+              ))}
+              <th />
+            </tr>
+          </thead>
+          <tbody>
+            {userCrop.map((user) => (
+              <User key={user._id} {...user} {...rest} />
             ))}
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <User key={user._id} {...user} {...rest} />
-          ))}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+        <Pagination
+          itemCount={userCount}
+          pageSize={pageSize}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+        />
+      </>
     )
   );
 };
