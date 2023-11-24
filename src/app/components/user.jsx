@@ -1,6 +1,7 @@
-import React from "react";
-import Quality from "./quality";
-import Bookmark from "./bookmark";
+import React from 'react'
+import PropTypes from 'prop-types'
+import Quality from './quality'
+import Bookmark from './bookmark'
 
 const User = ({
   _id,
@@ -11,7 +12,7 @@ const User = ({
   qualities,
   onDelete,
   bookmark,
-  onCheck,
+  onCheck
 }) => {
   return (
     <tr>
@@ -37,7 +38,19 @@ const User = ({
         </button>
       </td>
     </tr>
-  );
-};
+  )
+}
 
-export default User;
+User.propTypes = {
+  _id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  rate: PropTypes.number.isRequired,
+  completedMeetings: PropTypes.number.isRequired,
+  profession: PropTypes.object.isRequired,
+  qualities: PropTypes.array.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  bookmark: PropTypes.bool.isRequired,
+  onCheck: PropTypes.func.isRequired
+}
+
+export default User

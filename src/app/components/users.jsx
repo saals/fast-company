@@ -1,28 +1,29 @@
-import React, { useState } from "react";
-import User from "./user";
-import Pagination from "./pagination";
-import paginate from "../utils/paginate";
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+import User from './user'
+import Pagination from './pagination'
+import paginate from '../utils/paginate'
 
 const Users = ({ users, ...rest }) => {
   const tableTitles = [
-    "Имя",
-    "Качества",
-    "Профессия",
-    "Встретился,раз",
-    "Оценка",
-    "Избранное",
-  ];
+    'Имя',
+    'Качества',
+    'Профессия',
+    'Встретился,раз',
+    'Оценка',
+    'Избранное'
+  ]
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1)
 
-  const userCount = users.length;
-  const pageSize = 4;
+  const userCount = users.length
+  const pageSize = 4
 
   const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+    setCurrentPage(pageNumber)
+  }
 
-  const userCrop = paginate(users, currentPage, pageSize);
+  const userCrop = paginate(users, currentPage, pageSize)
 
   return (
     userCount > 0 && (
@@ -52,7 +53,11 @@ const Users = ({ users, ...rest }) => {
         />
       </>
     )
-  );
-};
+  )
+}
 
-export default Users;
+Users.propTypes = {
+  users: PropTypes.array.isRequired
+}
+
+export default Users
