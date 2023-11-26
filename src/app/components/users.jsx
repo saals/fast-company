@@ -18,6 +18,8 @@ const Users = ({ users: allUsers, ...rest }) => {
     'Избранное'
   ]
 
+  const pageSize = 2
+
   const [currentPage, setCurrentPage] = useState(1)
   const [professions, setProfessions] = useState()
   const [selectedProf, setSelectedProf] = useState()
@@ -42,8 +44,6 @@ const Users = ({ users: allUsers, ...rest }) => {
     setSelectedProf()
   }
 
-  const pageSize = 2
-
   const filteredUsers = selectedProf
     ? allUsers.filter((user) => user.profession === selectedProf)
     : allUsers
@@ -53,9 +53,9 @@ const Users = ({ users: allUsers, ...rest }) => {
   const userCrop = paginate(filteredUsers, currentPage, pageSize)
 
   return (
-    <>
+    <div className="d-flex justify-content-center mt-3">
       {professions && (
-        <>
+        <div className="d-flex flex-column p-3">
           <GroupList
             items={professions}
             selectedItem={selectedProf}
@@ -64,38 +64,42 @@ const Users = ({ users: allUsers, ...rest }) => {
           <button className="btn btn-secondary mt-2" onClick={handleReset}>
             Reset
           </button>
-        </>
+        </div>
       )}
 
-      <SearchStatus length={userCount} />
-      {userCount > 0 && (
-        <>
-          <table className="table table-striped">
-            <thead>
-              <tr>
-                {tableTitles.map((title) => (
-                  <th key={title} scope="col">
-                    {title}
-                  </th>
+      <div>
+        <SearchStatus length={userCount} />
+        {userCount > 0 && (
+          <div className="d-flex flex-column">
+            <table className="table table-striped">
+              <thead>
+                <tr>
+                  {tableTitles.map((title) => (
+                    <th key={title} scope="col">
+                      {title}
+                    </th>
+                  ))}
+                  <th />
+                </tr>
+              </thead>
+              <tbody>
+                {userCrop.map((user) => (
+                  <User key={user._id} {...user} {...rest} />
                 ))}
-                <th />
-              </tr>
-            </thead>
-            <tbody>
-              {userCrop.map((user) => (
-                <User key={user._id} {...user} {...rest} />
-              ))}
-            </tbody>
-          </table>
-          <Pagination
-            itemCount={userCount}
-            pageSize={pageSize}
-            currentPage={currentPage}
-            onPageChange={handlePageChange}
-          />
-        </>
-      )}
-    </>
+              </tbody>
+            </table>
+            <div className="d-flex justify-content-center">
+              <Pagination
+                itemCount={userCount}
+                pageSize={pageSize}
+                currentPage={currentPage}
+                onPageChange={handlePageChange}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
   )
 }
 
