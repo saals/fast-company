@@ -1,73 +1,57 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import User from './user'
+import Table from './table'
+// import TableHead from './tableHead'
+// import TableBody from './tableBody'
+import Bookmark from './bookmark'
+import QualitiesList from './qualitiesList'
 
-const UsersTable = ({ users, onSort, selectedSort, ...rest }) => {
+const UsersTable = ({ users, onSort, selectedSort, onDelete, onCheck }) => {
   const columns = {
-    name: { iter: 'name', name: 'Имя' },
-    qualities: { name: 'Качества' },
-    profession: { iter: 'profession.name', name: 'Профессия' },
-    completedMeetings: { iter: 'completedMeetings', name: 'Встретился, раз' },
-    rate: { iter: 'rate', name: 'Оценка' },
-    bookmark: { iter: 'bookmark', name: 'Избранное' },
-    delete: {}
-  }
-
-  const handleSort = (item) => {
-    if (selectedSort.iter !== item) {
-      onSort({ iter: item, order: 'asc' })
-    } else {
-      onSort({
-        ...selectedSort,
-        order: selectedSort.order === 'asc' ? 'desc' : 'asc'
-      })
-    }
-  }
-
-  const renderArrowSort = (currentIter, selectedSort) => {
-    if (currentIter === selectedSort.iter) {
-      if (selectedSort.order === 'asc') {
-        return <i className="bi bi-caret-down-fill"></i>
-      }
-      return <i className="bi bi-caret-up-fill"></i>
+    name: { path: 'name', name: 'Имя' },
+    qualities: {
+      name: 'Качества',
+      component: (user) => <QualitiesList qualities={user.qualities} />
+    },
+    profession: { path: 'profession.name', name: 'Профессия' },
+    completedMeetings: { path: 'completedMeetings', name: 'Встретился, раз' },
+    rate: { path: 'rate', name: 'Оценка' },
+    bookmark: {
+      path: 'bookmark',
+      name: 'Избранное',
+      component: (user) => (
+        <Bookmark status={user.bookmark} onClick={() => onCheck(user._id)} />
+      )
+    },
+    delete: {
+      component: (user) => (
+        <button
+          type="button"
+          className="btn btn-danger"
+          onClick={() => onDelete(user._id)}
+        >
+          delete
+        </button>
+      )
     }
   }
 
   return (
-    <table className="table table-striped">
-      <thead>
-        <tr>
-          {Object.keys(columns).map((column) => (
-            <th
-              scope="col"
-              role={columns[column].iter && 'button'}
-              onClick={
-                columns[column].iter
-                  ? () => handleSort(columns[column].iter)
-                  : undefined
-              }
-              key={column}
-            >
-              {columns[column].name}
-              {renderArrowSort(columns[column].iter, selectedSort)}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {users.map((user) => (
-          <User key={user._id} {...user} {...rest} />
-        ))}
-      </tbody>
-    </table>
+    // <Table>
+    //   <TableHead {...{ columns, onSort, selectedSort }} />
+    //   <TableBody {...{ data: users, columns }} />
+    // </Table>
+    <Table {...{ columns, data: users, onSort, selectedSort }} />
   )
 }
 
 UsersTable.propTypes = {
-  users: PropTypes.array.isRequired,
-  onSort: PropTypes.func.isRequired,
-  selectedSort: PropTypes.object.isRequired
+  users: PropTypes.array,
+  onSort: PropTypes.func,
+  selectedSort: PropTypes.object,
+  onDelete: PropTypes.func,
+  onCheck: PropTypes.func
 }
 
 export default UsersTable
