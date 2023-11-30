@@ -10,13 +10,30 @@ import GroupList from './groupList'
 import SearchStatus from './searchStatus'
 import UsersTable from './usersTable'
 
-const Users = ({ users: allUsers, ...rest }) => {
-  const pageSize = 8
-
+const Users = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [professions, setProfessions] = useState()
   const [selectedProf, setSelectedProf] = useState()
   const [sortBy, setSortBy] = useState({ path: 'name', order: 'asc' })
+
+  const [users, setUsers] = useState(null)
+
+  useEffect(() => {
+    api.users.fetchAll().then((data) => setUsers(data))
+  }, [])
+
+  const handleDelete = (id) => {
+    setUsers(users.filter((user) => user._id !== id))
+  }
+
+  const handleCheck = (id) => {
+    setUsers(
+      users.map((user) => {
+        if (user._id === id) user.bookmark = !user.bookmark
+        return user
+      })
+    )
+  }
 
   useEffect(() => {
     api.professions.fetchAll().then((data) => setProfessions(data))
@@ -42,12 +59,18 @@ const Users = ({ users: allUsers, ...rest }) => {
     setSortBy(item)
   }
 
+  if (!users) {
+    return 'Loading...'
+  }
+
   const filteredUsers = selectedProf
-    ? allUsers.filter((user) => user.profession._id === selectedProf._id) // JSON.stringify(user.profession) === JSON.stringify(selectedProf)
-    : allUsers
+    ? users.filter((user) => user.profession._id === selectedProf._id) // JSON.stringify(user.profession) === JSON.stringify(selectedProf)
+    : users
 
   const userCount = filteredUsers.length
   const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order])
+
+  const pageSize = 8
   const userCrop = paginate(sortedUsers, currentPage, pageSize)
 
   return (
@@ -73,7 +96,8 @@ const Users = ({ users: allUsers, ...rest }) => {
             users={userCrop}
             onSort={handleSort}
             selectedSort={sortBy}
-            {...rest}
+            onDelete={handleDelete}
+            onCheck={handleCheck}
           />
         )}
 
@@ -91,7 +115,7 @@ const Users = ({ users: allUsers, ...rest }) => {
 }
 
 Users.propTypes = {
-  users: PropTypes.array.isRequired
+  users: PropTypes.array
 }
 
 export default Users
