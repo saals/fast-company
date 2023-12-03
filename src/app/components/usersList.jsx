@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
 
-import api from '../api/'
+import api from '../api'
 import paginate from '../utils/paginate'
 
 import Pagination from './pagination'
@@ -10,7 +10,7 @@ import GroupList from './groupList'
 import SearchStatus from './searchStatus'
 import UsersTable from './usersTable'
 
-const Users = () => {
+const UsersList = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [professions, setProfessions] = useState()
   const [selectedProf, setSelectedProf] = useState()
@@ -114,8 +114,8 @@ const Users = () => {
   )
 }
 
-Users.propTypes = {
+UsersList.propTypes = {
   users: PropTypes.array
 }
 
-export default Users
+export default UsersList
