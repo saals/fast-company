@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
 import Table from './table'
 // import TableHead from './tableHead'
@@ -9,7 +10,11 @@ import QualitiesList from './qualitiesList'
 
 const UsersTable = ({ users, onSort, selectedSort, onDelete, onCheck }) => {
   const columns = {
-    name: { path: 'name', name: 'Имя' },
+    name: {
+      path: 'name',
+      name: 'Имя',
+      component: (user) => <Link to={`/users/${user._id}`}>{user.name}</Link>
+    },
     qualities: {
       name: 'Качества',
       component: (user) => <QualitiesList qualities={user.qualities} />
