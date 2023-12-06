@@ -1,7 +1,15 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
-const TextField = ({ label, type, name, value, onFieldChange, error }) => {
+const TextField = ({
+  label,
+  type,
+  name,
+  value,
+  onFieldChange,
+  error,
+  placeholder
+}) => {
   const [showPassword, setShowPassword] = useState(false)
   const toggleShowPassword = () => {
     setShowPassword((prev) => !prev)
@@ -12,6 +20,7 @@ const TextField = ({ label, type, name, value, onFieldChange, error }) => {
       <div className="input-group has-validation">
         <input
           className={'form-control' + (error ? ' is-invalid' : '')}
+          placeholder={placeholder}
           type={showPassword ? 'text' : type}
           id={name}
           name={name}
@@ -43,7 +52,8 @@ TextField.propTypes = {
   name: PropTypes.string,
   value: PropTypes.string,
   onFieldChange: PropTypes.func,
-  error: PropTypes.string
+  error: PropTypes.string,
+  placeholder: PropTypes.string
 }
 
 export default TextField

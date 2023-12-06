@@ -9,12 +9,14 @@ import Pagination from './pagination'
 import GroupList from './groupList'
 import SearchStatus from './searchStatus'
 import UsersTable from './usersTable'
+import TextField from './textField'
 
 const UsersList = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [professions, setProfessions] = useState()
   const [selectedProf, setSelectedProf] = useState()
   const [sortBy, setSortBy] = useState({ path: 'name', order: 'asc' })
+  const [searchValue, setSearchValue] = useState('')
 
   const [users, setUsers] = useState(null)
 
@@ -41,14 +43,20 @@ const UsersList = () => {
 
   useEffect(() => {
     setCurrentPage(1)
-  }, [selectedProf])
+  }, [selectedProf, searchValue])
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber)
   }
 
   const handleProfSelect = (item) => {
+    if (searchValue) setSearchValue('')
     setSelectedProf(item)
+  }
+
+  const handleSearchChange = ({ target }) => {
+    setSelectedProf()
+    setSearchValue(target.value.trim())
   }
 
   const handleReset = () => {
@@ -63,9 +71,22 @@ const UsersList = () => {
     return 'Loading...'
   }
 
-  const filteredUsers = selectedProf
-    ? users.filter((user) => user.profession._id === selectedProf._id) // JSON.stringify(user.profession) === JSON.stringify(selectedProf)
-    : users
+  // const filteredUsers = searchValue
+  //   ? users.filter((user) => user.name.toLowerCase().includes(searchValue.toLowerCase()))
+  //   : selectedProf
+  //     ? users.filter((user) => user.profession._id === selectedProf._id) // JSON.stringify(user.profession) === JSON.stringify(selectedProf)
+  //     : users
+
+  let filteredUsers = users
+  if (searchValue) {
+    filteredUsers = users.filter((user) =>
+      user.name.toLowerCase().includes(searchValue.toLowerCase())
+    )
+  } else if (selectedProf) {
+    filteredUsers = users.filter(
+      (user) => JSON.stringify(user.profession) === JSON.stringify(selectedProf)
+    )
+  }
 
   const userCount = filteredUsers.length
   const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order])
@@ -90,6 +111,11 @@ const UsersList = () => {
 
       <div className="d-flex flex-column flex-shrink-0">
         <SearchStatus length={userCount} />
+        <TextField
+          placeholder="Search..."
+          value={searchValue}
+          onFieldChange={handleSearchChange}
+        />
 
         {userCount > 0 && (
           <UsersTable
