@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import PropTypes from 'prop-types'
 import _ from 'lodash'
 
 import api from '../api'
@@ -71,22 +70,16 @@ const UsersList = () => {
     return 'Loading...'
   }
 
-  // const filteredUsers = searchValue
-  //   ? users.filter((user) => user.name.toLowerCase().includes(searchValue.toLowerCase()))
-  //   : selectedProf
-  //     ? users.filter((user) => user.profession._id === selectedProf._id) // JSON.stringify(user.profession) === JSON.stringify(selectedProf)
-  //     : users
-
-  let filteredUsers = users
-  if (searchValue) {
-    filteredUsers = users.filter((user) =>
-      user.name.toLowerCase().includes(searchValue.toLowerCase())
-    )
-  } else if (selectedProf) {
-    filteredUsers = users.filter(
-      (user) => JSON.stringify(user.profession) === JSON.stringify(selectedProf)
-    )
-  }
+  const filteredUsers = searchValue
+    ? users.filter((user) =>
+        user.name.toLowerCase().includes(searchValue.toLowerCase())
+      )
+    : selectedProf
+      ? users.filter(
+          (user) =>
+            JSON.stringify(user.profession) === JSON.stringify(selectedProf)
+        )
+      : users
 
   const userCount = filteredUsers.length
   const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order])
@@ -138,10 +131,6 @@ const UsersList = () => {
       </div>
     </div>
   )
-}
-
-UsersList.propTypes = {
-  users: PropTypes.array
 }
 
 export default UsersList
