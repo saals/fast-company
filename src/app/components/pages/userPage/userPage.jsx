@@ -9,10 +9,8 @@ const UserPage = ({ userId }) => {
   const [user, setUser] = useState()
 
   useEffect(() => {
-    api.users.getById(userId).then((user) => {
-      setUser(user)
-    })
-  })
+    api.users.getById(userId).then((user) => setUser(user))
+  }, [])
 
   const history = useHistory()
   const handleClick = () => {
