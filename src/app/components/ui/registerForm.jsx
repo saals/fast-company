@@ -5,9 +5,15 @@ import { validator } from '../../utils/validator'
 
 import TextField from '../common/form/textField'
 import SelectField from '../common/form/selectField'
+import RadioField from '../common/form/radioField'
 
 const RegisterForm = () => {
-  const [data, setData] = useState({ email: '', password: '', profession: '' })
+  const [data, setData] = useState({
+    email: '',
+    password: '',
+    profession: '',
+    sex: 'male'
+  })
   const [errors, setErrors] = useState({})
 
   const [professions, setProfessions] = useState()
@@ -98,6 +104,15 @@ const RegisterForm = () => {
         options={professions}
         onFieldChange={handleFieldChange}
         error={errors.profession}
+      />
+      <RadioField
+        options={[
+          { name: 'Муж', value: 'male' },
+          { name: 'Жен', value: 'female' }
+        ]}
+        name="sex"
+        value={data.sex}
+        onFieldChange={handleFieldChange}
       />
 
       <button
