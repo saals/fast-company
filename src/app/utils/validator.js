@@ -4,9 +4,13 @@ export function validator(data, config) {
   function validate(validMethod, data, config) {
     let hasError = false
     switch (validMethod) {
-      case 'isRequired':
-        hasError = data.trim() === ''
+      case 'isRequired': {
+        typeof data === 'boolean'
+          ? (hasError = !data)
+          : (hasError = data.trim() === '')
+
         break
+      }
       case 'isEmail': {
         const emailRegex = /^\S+@\S+\.\S+$/g
         hasError = !emailRegex.test(data)

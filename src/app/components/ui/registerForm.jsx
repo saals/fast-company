@@ -7,6 +7,7 @@ import TextField from '../common/form/textField'
 import SelectField from '../common/form/selectField'
 import RadioField from '../common/form/radioField'
 import MultiSelectField from '../common/form/multiSelectField'
+import CheckboxField from '../common/form/checkboxField'
 
 const RegisterForm = () => {
   const [data, setData] = useState({
@@ -14,7 +15,8 @@ const RegisterForm = () => {
     password: '',
     profession: '',
     sex: 'male',
-    qualities: []
+    qualities: [],
+    license: false
   })
   const [errors, setErrors] = useState({})
 
@@ -62,6 +64,12 @@ const RegisterForm = () => {
     profession: {
       isRequired: {
         message: 'обязательно укажите профессию'
+      }
+    },
+
+    license: {
+      isRequired: {
+        message: 'Для регистрации Вы должны принять лицензию'
       }
     }
   }
@@ -119,7 +127,6 @@ const RegisterForm = () => {
         value={data.sex}
         onFieldChange={handleFieldChange}
       />
-
       <MultiSelectField
         options={qualities}
         name="qualities"
@@ -127,7 +134,14 @@ const RegisterForm = () => {
         defaultValue={data.qualities}
         label="Качества"
       />
-
+      <CheckboxField
+        name="license"
+        value={data.license}
+        onFieldChange={handleFieldChange}
+        error={errors.license}
+      >
+        Принять <a>лицензионное соглашение</a>
+      </CheckboxField>
       <button
         className="btn btn-primary w-100"
         type="submit"
