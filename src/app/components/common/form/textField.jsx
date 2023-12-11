@@ -14,6 +14,11 @@ const TextField = ({
   const toggleShowPassword = () => {
     setShowPassword((prev) => !prev)
   }
+
+  const handleFieldChange = ({ target }) => {
+    onFieldChange({ [name]: target.value })
+  }
+
   return (
     <div className="mb-3">
       <label htmlFor={name}>{label}</label>
@@ -25,7 +30,7 @@ const TextField = ({
           id={name}
           name={name}
           value={value}
-          onChange={onFieldChange}
+          onChange={handleFieldChange}
         />
         {type === 'password' && (
           <button

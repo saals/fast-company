@@ -6,26 +6,31 @@ import { validator } from '../../utils/validator'
 import TextField from '../common/form/textField'
 import SelectField from '../common/form/selectField'
 import RadioField from '../common/form/radioField'
+import MultiSelectField from '../common/form/multiSelectField'
 
 const RegisterForm = () => {
   const [data, setData] = useState({
     email: '',
     password: '',
     profession: '',
-    sex: 'male'
+    sex: 'male',
+    qualities: []
   })
   const [errors, setErrors] = useState({})
 
-  const [professions, setProfessions] = useState()
+  const [professions, setProfessions] = useState([])
+  const [qualities, setQualities] = useState({})
 
   useEffect(() => {
     api.professions
       .fetchAll()
       .then((professions) => setProfessions(professions))
+
+    api.qualities.fetchAll().then((qualities) => setQualities(qualities))
   }, [])
 
-  const handleFieldChange = ({ target }) => {
-    setData((prev) => ({ ...prev, [target.name]: target.value }))
+  const handleFieldChange = (target) => {
+    setData((prev) => ({ ...prev, ...target }))
   }
 
   const validatorConfig = {
@@ -115,12 +120,20 @@ const RegisterForm = () => {
         onFieldChange={handleFieldChange}
       />
 
+      <MultiSelectField
+        options={qualities}
+        name="qualities"
+        onFieldChange={handleFieldChange}
+        defaultValue={data.qualities}
+        label="Качества"
+      />
+
       <button
         className="btn btn-primary w-100"
         type="submit"
         disabled={!isValid}
       >
-        Принять
+        Отправить
       </button>
     </form>
   )

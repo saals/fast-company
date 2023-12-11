@@ -14,14 +14,18 @@ const SelectField = ({
       ? Object.values(dataOptions)
       : dataOptions
 
+  const handleFieldChange = ({ target }) => {
+    onFieldChange({ [name]: target.value })
+  }
+
   return (
     <div className="mb-3">
-      <label className="form-label">{label}</label>
+      <label>{label}</label>
       <select
         className={'form-select' + (error ? ' is-invalid' : '')}
         name={name}
         value={value}
-        onChange={onFieldChange}
+        onChange={handleFieldChange}
       >
         <option disabled value="">
           Выбрать...
