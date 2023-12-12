@@ -8,7 +8,6 @@ import Pagination from '../../common/pagination'
 import GroupList from '../../common/groupList'
 import SearchStatus from '../../ui/searchStatus'
 import UsersTable from '../../ui/usersTable'
-import TextField from '../../common/form/textField'
 
 const UsersListPage = () => {
   const [currentPage, setCurrentPage] = useState(1)
@@ -104,10 +103,12 @@ const UsersListPage = () => {
 
       <div className="d-flex flex-column flex-shrink-0">
         <SearchStatus length={userCount} />
-        <TextField
+        <input
+          className="form-control mb-3"
+          type="text"
           placeholder="Search..."
           value={searchValue}
-          onFieldChange={handleSearchChange}
+          onChange={handleSearchChange}
         />
 
         {userCount > 0 && (
