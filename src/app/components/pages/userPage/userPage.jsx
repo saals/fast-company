@@ -14,22 +14,40 @@ const UserPage = ({ userId }) => {
 
   const history = useHistory()
   const handleClick = () => {
-    history.push('/users')
+    history.push(history.location.pathname + '/edit')
+  }
+  const handleGoBack = () => {
+    history.replace('/users')
   }
 
   if (!user) return 'Loading'
 
   return (
-    <>
-      <h1>{user.name}</h1>
-      <h3>Профессия: {user.profession.name}</h3>
-      <p>{<Qualities qualities={user.qualities} />}</p>
-      <p>Количество встреч: {user.completedMeetings}</p>
-      <h2>Рейтинг: {user.rate} / 5</h2>
-      <button className="btn btn-warning" type="button" onClick={handleClick}>
-        Все пользователи
-      </button>
-    </>
+    <div className="container mt-5">
+      <div className="row">
+        <div className="col-md-6 offset-md-3 shadow p-4">
+          <h1>{user.name}</h1>
+          <h3>Профессия: {user.profession.name}</h3>
+          <p>{<Qualities qualities={user.qualities} />}</p>
+          <p>Количество встреч: {user.completedMeetings}</p>
+          <h2>Рейтинг: {user.rate} / 5</h2>
+          <button
+            className="btn btn-warning fw-semibold"
+            type="button"
+            onClick={handleClick}
+          >
+            Изменить
+          </button>
+        </div>
+        <button
+          className="btn btn-info col-md-6 offset-md-3"
+          type="button"
+          onClick={handleGoBack}
+        >
+          Вернуться к списку
+        </button>
+      </div>
+    </div>
   )
 }
 
