@@ -9,6 +9,7 @@ import TextField from '../../common/form/textField'
 import SelectField from '../../common/form/selectField'
 import RadioField from '../../common/form/radioField'
 import MultiSelectField from '../../common/form/multiSelectField'
+import BackHistoryButton from '../../common/backButton'
 
 const EditUserPage = ({ userId }) => {
   const [data, setData] = useState({
@@ -122,9 +123,9 @@ const EditUserPage = ({ userId }) => {
       .then((data) => history.replace(`/users/${data._id}`))
   }
 
-  const handleGoBack = () => {
-    history.push(`/users/${userId}`)
-  }
+  // const handleGoBack = () => {
+  //   history.push(`/users/${userId}`)
+  // }
 
   const handleFieldChange = (target) => {
     setData((prev) => ({ ...prev, ...target }))
@@ -142,6 +143,7 @@ const EditUserPage = ({ userId }) => {
 
   return (
     <div className="container mt-5">
+      <BackHistoryButton />
       <div className="row">
         <div className="col-md-6 offset-md-3 shadow p-4">
           <form onSubmit={handleSubmit}>
@@ -200,13 +202,13 @@ const EditUserPage = ({ userId }) => {
             </button>
           </form>
         </div>
-        <button
+        {/* <button
           className="btn btn-info col-md-6 offset-md-3"
           type="button"
           onClick={handleGoBack}
         >
           Отменить
-        </button>
+        </button> */}
       </div>
     </div>
   )
