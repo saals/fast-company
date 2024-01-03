@@ -8,6 +8,7 @@ import Pagination from '../../common/pagination'
 import GroupList from '../../common/groupList'
 import SearchStatus from '../../ui/searchStatus'
 import UsersTable from '../../ui/usersTable'
+import { useUser } from '../../../hooks/useUser'
 
 const UsersListPage = () => {
   const [currentPage, setCurrentPage] = useState(1)
@@ -16,23 +17,21 @@ const UsersListPage = () => {
   const [sortBy, setSortBy] = useState({ path: 'name', order: 'asc' })
   const [searchValue, setSearchValue] = useState('')
 
-  const [users, setUsers] = useState(null)
-
-  useEffect(() => {
-    api.users.fetchAll().then((data) => setUsers(data))
-  }, [])
+  const { users } = useUser()
 
   const handleDelete = (id) => {
-    setUsers(users.filter((user) => user._id !== id))
+    // setUsers(users.filter((user) => user._id !== id))
+    console.log(id)
   }
 
   const handleCheck = (id) => {
-    setUsers(
-      users.map((user) => {
-        if (user._id === id) user.bookmark = !user.bookmark
-        return user
-      })
-    )
+    // setUsers(
+    //   users.map((user) => {
+    //     if (user._id === id) user.bookmark = !user.bookmark
+    //     return user
+    //   })
+    // )
+    console.log(id)
   }
 
   useEffect(() => {
@@ -65,9 +64,9 @@ const UsersListPage = () => {
     setSortBy(item)
   }
 
-  if (!users) {
-    return 'Loading...'
-  }
+  // if (!users) {
+  //   return 'Loading...'
+  // }
 
   const filteredUsers = searchValue
     ? users.filter((user) =>

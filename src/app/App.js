@@ -1,5 +1,6 @@
 import React from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
 
 import NavBar from './components/ui/nawBar'
 import Main from './layouts/main'
@@ -16,6 +17,7 @@ const App = () => {
         <Route path="/users/:userId?/:edit?" component={Users} />
         <Redirect to="/" />
       </Switch>
+      <ToastContainer />
     </>
   )
 }
