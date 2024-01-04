@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import _ from 'lodash'
 
-import api from '../../../api'
+// import api from '../../../api'
 import paginate from '../../../utils/paginate'
 
 import Pagination from '../../common/pagination'
@@ -9,15 +9,16 @@ import GroupList from '../../common/groupList'
 import SearchStatus from '../../ui/searchStatus'
 import UsersTable from '../../ui/usersTable'
 import { useUser } from '../../../hooks/useUser'
+import { useProfession } from '../../../hooks/useProfession'
 
 const UsersListPage = () => {
   const [currentPage, setCurrentPage] = useState(1)
-  const [professions, setProfessions] = useState()
   const [selectedProf, setSelectedProf] = useState()
   const [sortBy, setSortBy] = useState({ path: 'name', order: 'asc' })
   const [searchValue, setSearchValue] = useState('')
 
   const { users } = useUser()
+  const { professions } = useProfession()
 
   const handleDelete = (id) => {
     // setUsers(users.filter((user) => user._id !== id))
@@ -33,10 +34,6 @@ const UsersListPage = () => {
     // )
     console.log(id)
   }
-
-  useEffect(() => {
-    api.professions.fetchAll().then((data) => setProfessions(data))
-  }, [])
 
   useEffect(() => {
     setCurrentPage(1)
