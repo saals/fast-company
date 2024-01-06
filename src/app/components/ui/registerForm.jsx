@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import api from '../../api'
+// import api from '../../api'
 import { validator } from '../../utils/validator'
 
 import TextField from '../common/form/textField'
@@ -8,6 +8,9 @@ import SelectField from '../common/form/selectField'
 import RadioField from '../common/form/radioField'
 import MultiSelectField from '../common/form/multiSelectField'
 import CheckboxField from '../common/form/checkboxField'
+
+import { useProfession } from '../../hooks/useProfession'
+import { useQuality } from '../../hooks/useQuality'
 
 const RegisterForm = () => {
   const [data, setData] = useState({
@@ -20,16 +23,8 @@ const RegisterForm = () => {
   })
   const [errors, setErrors] = useState({})
 
-  const [professions, setProfessions] = useState([])
-  const [qualities, setQualities] = useState({})
-
-  useEffect(() => {
-    api.professions
-      .fetchAll()
-      .then((professions) => setProfessions(professions))
-
-    api.qualities.fetchAll().then((qualities) => setQualities(qualities))
-  }, [])
+  const { professions } = useProfession()
+  const { qualities } = useQuality()
 
   const handleFieldChange = (target) => {
     setData((prev) => ({ ...prev, ...target }))
@@ -88,7 +83,8 @@ const RegisterForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!validate()) return
-    console.log(data)
+    const newData = { ...data, qualities: data.qualities.map((q) => q.value) }
+    console.log(data, newData)
   }
 
   const isValid = Object.keys(errors).length === 0
