@@ -11,6 +11,7 @@ import CheckboxField from '../common/form/checkboxField'
 
 import { useProfession } from '../../hooks/useProfession'
 import { useQuality } from '../../hooks/useQuality'
+import { useAuth } from '../../hooks/useAuth'
 
 const RegisterForm = () => {
   const [data, setData] = useState({
@@ -25,6 +26,7 @@ const RegisterForm = () => {
 
   const { professions } = useProfession()
   const { qualities } = useQuality()
+  const { signUp } = useAuth()
 
   const handleFieldChange = (target) => {
     setData((prev) => ({ ...prev, ...target }))
@@ -84,7 +86,8 @@ const RegisterForm = () => {
     e.preventDefault()
     if (!validate()) return
     const newData = { ...data, qualities: data.qualities.map((q) => q.value) }
-    console.log(data, newData)
+    console.log(newData)
+    signUp(newData)
   }
 
   const isValid = Object.keys(errors).length === 0
