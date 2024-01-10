@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useHistory } from 'react-router-dom'
 
 // import api from '../../api'
 import { validator } from '../../utils/validator'
@@ -14,6 +15,7 @@ import { useQuality } from '../../hooks/useQuality'
 import { useAuth } from '../../hooks/useAuth'
 
 const RegisterForm = () => {
+  const history = useHistory()
   const [data, setData] = useState({
     email: '',
     password: '',
@@ -82,12 +84,16 @@ const RegisterForm = () => {
     validate()
   }, [data])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (!validate()) return
     const newData = { ...data, qualities: data.qualities.map((q) => q.value) }
-    console.log(newData)
-    signUp(newData)
+    try {
+      await signUp(newData)
+      history.push('/')
+    } catch (error) {
+      setErrors(error)
+    }
   }
 
   const isValid = Object.keys(errors).length === 0

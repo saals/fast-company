@@ -5,7 +5,12 @@ import { toast } from 'react-toastify'
 import userService from '../services/userService'
 import { setTokens } from '../services/localStorageService'
 
-const httpAuth = axios.create()
+const httpAuth = axios.create({
+  baseURL: 'https://identitytoolkit.googleapis.com/v1/',
+  params: {
+    key: process.env.REACT_APP_FIREBASE_KEY
+  }
+})
 const AuthContext = React.createContext()
 
 export const useAuth = () => {
@@ -16,19 +21,56 @@ const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null)
   const [currentUser, setUser] = useState({})
 
-  async function signUp({ email, password, ...rest }) {
-    const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_FIREBASE_KEY}`
+  async function signIn({ email, password, stayOn }) {
+    // const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.REACT_APP_FIREBASE_KEY}`
     try {
-      const { data } = await httpAuth.post(url, {
+      const { data } = await httpAuth.post('accounts:signInWithPassword', {
+        email,
+        password,
+        returnSecureToken: true
+      })
+      setTokens(data)
+    } catch (error) {
+      errorCatcher(error)
+      const { code, message } = error.response.data.error
+      if (code === 400) {
+        switch (message) {
+          case 'INVALID_LOGIN_CREDENTIALS':
+            throw new Error('email или пароль введены не верно')
+          default:
+            throw new Error('Слишком много попыток входа. Попробуйте позднее.')
+        }
+        // if (message === 'INVALID_LOGIN_CREDENTIALS') {
+        //   throw new Error('email или пароль введены не верно')
+        // }
+        // if (message.startsWith('TOO_MANY_ATTEMPTS_TRY_LATER')) {
+        //   throw new Error('Слишком много попыток входа. Попробуйте позднее.')
+        // }
+      }
+    }
+  }
+
+  async function signUp({ email, password, ...rest }) {
+    // const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_FIREBASE_KEY}`
+    try {
+      const { data } = await httpAuth.post('accounts:signUp', {
         email,
         password,
         returnSecureToken: true
       })
       setTokens(data)
       createUser({ _id: data.localId, email, ...rest })
-      console.log(data)
     } catch (error) {
       errorCatcher(error)
+      const { code, message } = error.response.data.error
+      if (code === 400) {
+        if (message === 'EMAIL_EXISTS') {
+          const errorObject = {
+            email: 'Пользователь с такой почтой уже существует'
+          }
+          throw errorObject
+        }
+      }
     }
   }
 
@@ -57,7 +99,7 @@ const AuthProvider = ({ children }) => {
   }, [error])
 
   return (
-    <AuthContext.Provider value={{ signUp, currentUser }}>
+    <AuthContext.Provider value={{ signUp, signIn, currentUser }}>
       {children}
     </AuthContext.Provider>
   )

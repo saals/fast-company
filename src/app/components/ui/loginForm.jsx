@@ -3,38 +3,32 @@ import React, { useEffect, useState } from 'react'
 import { validator } from '../../utils/validator'
 import TextField from '../common/form/textField'
 import CheckboxField from '../common/form/checkboxField'
+import { useAuth } from '../../hooks/useAuth'
+import { useHistory } from 'react-router-dom'
 
 const LoginForm = () => {
-  const [data, setData] = useState({ email: '', password: '', stayOn: true })
+  const history = useHistory()
+  const [data, setData] = useState({ email: '', password: '', stayOn: false })
   const [errors, setErrors] = useState({})
+  const [enterError, setEnterError] = useState(null)
+
+  const { signIn } = useAuth()
 
   const handleFieldChange = (target) => {
     setData((prev) => ({ ...prev, ...target }))
+    setEnterError(null)
   }
 
   const validatorConfig = {
     email: {
       isRequired: {
         message: 'поле обязательно к заполнению'
-      },
-      isEmail: {
-        message: 'Email указан не корректно'
       }
     },
 
     password: {
       isRequired: {
         message: 'поле обязательно к заполнению'
-      },
-      hasCapitalSymbol: {
-        message: 'пароль должен содержать хотя бы одну заглавную букву'
-      },
-      hasDigit: {
-        message: 'пароль должен содержать хотя бы одну цифру'
-      },
-      min: {
-        value: 8,
-        message: 'пароль должен быть не менее 8 символов'
       }
     }
   }
@@ -50,10 +44,15 @@ const LoginForm = () => {
     validate()
   }, [data])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (!validate()) return
-    console.log(data)
+    try {
+      await signIn(data)
+      history.push('/')
+    } catch (error) {
+      setEnterError(error.message)
+    }
   }
 
   const isValid = Object.keys(errors).length === 0
@@ -82,10 +81,11 @@ const LoginForm = () => {
       >
         Оставаться в системе
       </CheckboxField>
+      {enterError && <p className="text-danger">{enterError}</p>}
       <button
         className="btn btn-primary w-100"
         type="submit"
-        disabled={!isValid}
+        disabled={!isValid || enterError}
       >
         Войти
       </button>
