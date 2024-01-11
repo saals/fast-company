@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import userService from '../services/userService'
-import { setTokens } from '../services/localStorageService'
+import localStorageService, { setTokens } from '../services/localStorageService'
 
-const httpAuth = axios.create({
+export const httpAuth = axios.create({
   baseURL: 'https://identitytoolkit.googleapis.com/v1/',
   params: {
     key: process.env.REACT_APP_FIREBASE_KEY
@@ -21,7 +21,7 @@ const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null)
   const [currentUser, setUser] = useState({})
 
-  async function signIn({ email, password, stayOn }) {
+  async function signIn({ email, password }) {
     // const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.REACT_APP_FIREBASE_KEY}`
     try {
       const { data } = await httpAuth.post('accounts:signInWithPassword', {
@@ -30,6 +30,7 @@ const AuthProvider = ({ children }) => {
         returnSecureToken: true
       })
       setTokens(data)
+      getUserDate()
     } catch (error) {
       errorCatcher(error)
       const { code, message } = error.response.data.error
@@ -50,6 +51,10 @@ const AuthProvider = ({ children }) => {
     }
   }
 
+  function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min)
+  }
+
   async function signUp({ email, password, ...rest }) {
     // const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_FIREBASE_KEY}`
     try {
@@ -59,7 +64,13 @@ const AuthProvider = ({ children }) => {
         returnSecureToken: true
       })
       setTokens(data)
-      createUser({ _id: data.localId, email, ...rest })
+      await createUser({
+        _id: data.localId,
+        email,
+        rate: randomInt(1, 5),
+        completedMeetings: randomInt(0, 200),
+        ...rest
+      })
     } catch (error) {
       errorCatcher(error)
       const { code, message } = error.response.data.error
@@ -76,12 +87,12 @@ const AuthProvider = ({ children }) => {
 
   async function createUser(data) {
     try {
-      // const { content } = await userService.create(data)
-      // setUser(content)
-      // console.log(content)
-      await userService.create(data)
-      setUser(data)
-      console.log(data)
+      const { content } = await userService.create(data)
+      setUser(content)
+      console.log(content)
+      // await userService.create(data)
+      // setUser(data)
+      // console.log(data)
     } catch (error) {
       errorCatcher(error)
     }
@@ -97,6 +108,20 @@ const AuthProvider = ({ children }) => {
       setError(null)
     }
   }, [error])
+
+  async function getUserDate() {
+    try {
+      const { content } = await userService.getCurrentUser()
+      setUser(content)
+    } catch (error) {
+      errorCatcher(error)
+    }
+  }
+  useEffect(() => {
+    if (localStorageService.getAccessToken()) {
+      getUserDate()
+    }
+  }, [])
 
   return (
     <AuthContext.Provider value={{ signUp, signIn, currentUser }}>

@@ -22,7 +22,8 @@ const RegisterForm = () => {
     profession: '',
     sex: 'male',
     qualities: [],
-    license: false
+    license: false,
+    name: ''
   })
   const [errors, setErrors] = useState({})
 
@@ -41,6 +42,16 @@ const RegisterForm = () => {
       },
       isEmail: {
         message: 'Email указан не корректно'
+      }
+    },
+
+    name: {
+      isRequired: {
+        message: 'поле обязательно к заполнению'
+      },
+      min: {
+        value: 3,
+        message: 'имя должно быть не менее 3 символов'
       }
     },
 
@@ -106,6 +117,13 @@ const RegisterForm = () => {
         value={data.email}
         onFieldChange={handleFieldChange}
         error={errors.email}
+      />
+      <TextField
+        label="Имя"
+        name="name"
+        value={data.name}
+        onFieldChange={handleFieldChange}
+        error={errors.name}
       />
       <TextField
         type="password"
