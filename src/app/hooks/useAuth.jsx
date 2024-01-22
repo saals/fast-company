@@ -19,7 +19,7 @@ export const useAuth = () => {
 
 const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null)
-  const [currentUser, setUser] = useState({})
+  const [currentUser, setUser] = useState()
 
   async function signIn({ email, password }) {
     // const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.REACT_APP_FIREBASE_KEY}`
