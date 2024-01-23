@@ -20,6 +20,7 @@ export const useAuth = () => {
 const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null)
   const [currentUser, setUser] = useState()
+  const [isLoading, setLoading] = useState(true)
 
   async function signIn({ email, password }) {
     // const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.REACT_APP_FIREBASE_KEY}`
@@ -115,17 +116,21 @@ const AuthProvider = ({ children }) => {
       setUser(content)
     } catch (error) {
       errorCatcher(error)
+    } finally {
+      setLoading(false)
     }
   }
   useEffect(() => {
     if (localStorageService.getAccessToken()) {
       getUserDate()
+    } else {
+      setLoading(false)
     }
   }, [])
 
   return (
     <AuthContext.Provider value={{ signUp, signIn, currentUser }}>
-      {children}
+      {!isLoading ? children : 'Loading...'}
     </AuthContext.Provider>
   )
 }
