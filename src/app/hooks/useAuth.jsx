@@ -31,7 +31,7 @@ const AuthProvider = ({ children }) => {
         returnSecureToken: true
       })
       setTokens(data)
-      getUserDate()
+      await getUserDate()
     } catch (error) {
       errorCatcher(error)
       const { code, message } = error.response.data.error
