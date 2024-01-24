@@ -18,7 +18,7 @@ const UsersListPage = () => {
   const [searchValue, setSearchValue] = useState('')
 
   const { users } = useUser()
-  const { professions } = useProfession()
+  const { professions, isLoading: professionsLoading } = useProfession()
 
   const handleDelete = (id) => {
     // setUsers(users.filter((user) => user._id !== id))
@@ -84,7 +84,7 @@ const UsersListPage = () => {
 
   return (
     <div className="d-flex mt-3">
-      {professions && (
+      {professions && !professionsLoading && (
         <div className="d-flex flex-column p-3">
           <GroupList
             items={professions}

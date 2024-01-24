@@ -8,7 +8,7 @@ import Bookmark from '../common/bookmark'
 import Qualities from './qualities'
 import Profession from './profession'
 
-const UsersTable = ({ users, onSort, selectedSort, onDelete, onCheck }) => {
+const UsersTable = ({ users, onSort, selectedSort, onCheck }) => {
   const columns = {
     name: {
       path: 'name',
@@ -31,17 +31,6 @@ const UsersTable = ({ users, onSort, selectedSort, onDelete, onCheck }) => {
       component: (user) => (
         <Bookmark status={user.bookmark} onClick={() => onCheck(user._id)} />
       )
-    },
-    delete: {
-      component: (user) => (
-        <button
-          type="button"
-          className="btn btn-danger"
-          onClick={() => onDelete(user._id)}
-        >
-          delete
-        </button>
-      )
     }
   }
 
@@ -58,7 +47,6 @@ UsersTable.propTypes = {
   users: PropTypes.array,
   onSort: PropTypes.func,
   selectedSort: PropTypes.object,
-  onDelete: PropTypes.func,
   onCheck: PropTypes.func
 }
 
