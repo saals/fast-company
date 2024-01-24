@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
+import { useHistory } from 'react-router-dom'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import userService from '../services/userService'
@@ -21,6 +22,7 @@ const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null)
   const [currentUser, setUser] = useState()
   const [isLoading, setLoading] = useState(true)
+  const history = useHistory()
 
   async function signIn({ email, password }) {
     // const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.REACT_APP_FIREBASE_KEY}`
@@ -50,6 +52,12 @@ const AuthProvider = ({ children }) => {
         // }
       }
     }
+  }
+
+  function logOut() {
+    localStorageService.removeAuthData()
+    setUser(null)
+    history.push('/')
   }
 
   function randomInt(min, max) {
@@ -129,7 +137,7 @@ const AuthProvider = ({ children }) => {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ signUp, signIn, currentUser }}>
+    <AuthContext.Provider value={{ signUp, signIn, currentUser, logOut }}>
       {!isLoading ? children : 'Loading...'}
     </AuthContext.Provider>
   )

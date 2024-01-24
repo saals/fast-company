@@ -10,6 +10,7 @@ import ProfessionProvider from './hooks/useProfession'
 import QualityProvider from './hooks/useQuality'
 import AuthProvider from './hooks/useAuth'
 import ProtectedRoute from './components/common/protectedRoute'
+import LogOut from './layouts/logOut'
 
 const App = () => {
   return (
@@ -22,6 +23,7 @@ const App = () => {
               <Route path="/" exact component={Main} />
               <Route path="/login/:type?" component={Login} />
               <ProtectedRoute path="/users/:userId?/:edit?" component={Users} />
+              <Route path="/logout" component={LogOut} />
               <Redirect to="/" />
             </Switch>
           </ProfessionProvider>
