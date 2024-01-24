@@ -78,6 +78,11 @@ const AuthProvider = ({ children }) => {
         email,
         rate: randomInt(1, 5),
         completedMeetings: randomInt(0, 200),
+        image: `https://api.dicebear.com/7.x/avataaars/svg?seed=${(
+          Math.random() + 1
+        )
+          .toString(36)
+          .substring(7)}.svg`,
         ...rest
       })
     } catch (error) {
