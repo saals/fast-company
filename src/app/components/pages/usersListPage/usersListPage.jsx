@@ -10,6 +10,7 @@ import SearchStatus from '../../ui/searchStatus'
 import UsersTable from '../../ui/usersTable'
 import { useUser } from '../../../hooks/useUser'
 import { useProfession } from '../../../hooks/useProfession'
+import { useAuth } from '../../../hooks/useAuth'
 
 const UsersListPage = () => {
   const [currentPage, setCurrentPage] = useState(1)
@@ -19,6 +20,7 @@ const UsersListPage = () => {
 
   const { users } = useUser()
   const { professions, isLoading: professionsLoading } = useProfession()
+  const { currentUser } = useAuth()
 
   const handleDelete = (id) => {
     // setUsers(users.filter((user) => user._id !== id))
@@ -64,18 +66,21 @@ const UsersListPage = () => {
   // if (!users) {
   //   return 'Loading...'
   // }
-
-  const filteredUsers = searchValue
-    ? users.filter((user) =>
-        user.name.toLowerCase().includes(searchValue.toLowerCase())
-      )
-    : selectedProf
-      ? users.filter(
-          (user) =>
-            JSON.stringify(user.profession) === JSON.stringify(selectedProf)
+  function filterUser(data) {
+    const filteredUsers = searchValue
+      ? data.filter((user) =>
+          user.name.toLowerCase().includes(searchValue.toLowerCase())
         )
-      : users
+      : selectedProf
+        ? data.filter(
+            (user) =>
+              JSON.stringify(user.profession) === JSON.stringify(selectedProf)
+          )
+        : data
+    return filteredUsers.filter((u) => u._id !== currentUser._id)
+  }
 
+  const filteredUsers = filterUser(users)
   const userCount = filteredUsers.length
   const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order])
 
