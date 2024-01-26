@@ -4,10 +4,12 @@ import { orderBy } from 'lodash'
 
 import api from '../../api'
 import CommentsList, { NewCommentForm } from '../common/comments'
+import { useComments } from '../../hooks/useComments'
 
 const Comments = () => {
   const { userId } = useParams()
   const [comments, setComments] = useState([])
+  const { createComment } = useComments()
 
   useEffect(() => {
     api.comments
@@ -16,9 +18,10 @@ const Comments = () => {
   }, [])
 
   const handleCommentAdd = (data) => {
-    api.comments
-      .add({ ...data, pageId: userId })
-      .then((comment) => setComments([...comments, comment]))
+    createComment(data)
+    // api.comments
+    //   .add({ ...data, pageId: userId })
+    //   .then((comment) => setComments([...comments, comment]))
   }
 
   const handleCommentRemove = (id) => {
