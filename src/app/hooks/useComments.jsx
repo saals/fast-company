@@ -18,8 +18,7 @@ const CommentsProvider = ({ children }) => {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    setComments(null)
-    setLoading(false)
+    getComments()
   }, [])
 
   async function createComment(data) {
@@ -38,16 +37,31 @@ const CommentsProvider = ({ children }) => {
     }
     console.log(comment)
   }
+
+  async function getComments() {
+    try {
+      const { content } = await commentService.getComments(userId)
+      console.log(content)
+      setComments(content)
+    } catch (error) {
+      console.log(error)
+      errorCatcher(error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  function errorCatcher(error) {
+    const { message } = error.response.data
+    setError(message)
+  }
+
   useEffect(() => {
     if (error !== null) {
       toast.error(error)
       setError(null)
     }
   }, [error])
-  function errorCatcher(error) {
-    const { message } = error.response.data
-    setError(message)
-  }
 
   return (
     <CommentsContext.Provider value={{ comments, createComment, isLoading }}>
