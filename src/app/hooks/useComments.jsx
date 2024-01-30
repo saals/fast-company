@@ -19,7 +19,7 @@ const CommentsProvider = ({ children }) => {
 
   useEffect(() => {
     getComments()
-  }, [])
+  }, [userId])
 
   async function createComment(data) {
     const comment = {
@@ -31,7 +31,7 @@ const CommentsProvider = ({ children }) => {
     }
     try {
       const { content } = await commentService.createComment(comment)
-      console.log(content)
+      setComments((prev) => [...prev, content])
     } catch (error) {
       errorCatcher(error)
     }
