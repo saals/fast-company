@@ -41,7 +41,6 @@ const CommentsProvider = ({ children }) => {
   async function getComments() {
     try {
       const { content } = await commentService.getComments(userId)
-      console.log(content)
       setComments(content)
     } catch (error) {
       console.log(error)
@@ -56,6 +55,17 @@ const CommentsProvider = ({ children }) => {
     setError(message)
   }
 
+  async function removeComment(id) {
+    try {
+      const { content } = await commentService.removeComment(id)
+      if (content === null) {
+        setComments((prev) => prev.filter((c) => c._id !== id))
+      }
+    } catch (error) {
+      errorCatcher(error)
+    }
+  }
+
   useEffect(() => {
     if (error !== null) {
       toast.error(error)
@@ -64,7 +74,9 @@ const CommentsProvider = ({ children }) => {
   }, [error])
 
   return (
-    <CommentsContext.Provider value={{ comments, createComment, isLoading }}>
+    <CommentsContext.Provider
+      value={{ comments, createComment, removeComment, isLoading }}
+    >
       {children}
     </CommentsContext.Provider>
   )
